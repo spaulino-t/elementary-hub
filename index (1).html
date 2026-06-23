@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Elementary Hub — PCIS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy:    #1a4d8f;
+    --navy-dk: #123870;
+    --navy-lt: #2563b0;
+    --teal:    #0f6e56;
+    --teal-lt: #e1f5ee;
+    --text:    #202124;
+    --muted:   #5f6368;
+    --border:  #e0e0e0;
+    --bg:      #f8f9fa;
+    --white:   #ffffff;
+    --radius:  10px;
+    --radius-lg: 14px;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', sans-serif; font-size: 15px; color: var(--text); background: var(--white); -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; text-decoration: none; }
+
+  /* LANGUAGE BAR */
+  .lang-bar { background: var(--navy-dk); padding: 6px 40px; display: flex; justify-content: flex-end; align-items: center; gap: 8px; }
+  .lang-btn { background: transparent; border: 1px solid rgba(255,255,255,0.35); color: rgba(255,255,255,0.75); font-size: 11px; font-family: 'Inter', sans-serif; padding: 3px 12px; border-radius: 20px; cursor: pointer; transition: all .2s; }
+  .lang-btn.active { background: rgba(255,255,255,0.18); color: #fff; border-color: rgba(255,255,255,0.6); }
+
+  /* NAV */
+  .nav { background: var(--navy); padding: 0 40px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .nav-logo { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+  .nav-logo-img { width: 40px; height: 40px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+  .nav-logo-img .initials { font-size: 13px; font-weight: 600; color: var(--navy); }
+  .nav-title { line-height: 1.3; }
+  .nav-title strong { display: block; color: #fff; font-size: 14px; font-weight: 600; }
+  .nav-title small { color: rgba(255,255,255,0.65); font-size: 11px; font-weight: 400; }
+  .nav-links { display: flex; align-items: center; gap: 2px; }
+  .nav-links a { color: rgba(255,255,255,0.82); font-size: 13px; padding: 8px 14px; border-radius: 6px; transition: background .18s, color .18s; cursor: pointer; }
+  .nav-links a:hover { background: rgba(255,255,255,0.12); color: #fff; }
+  .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 6px; }
+  .nav-burger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; margin: 4px 0; }
+  .nav-drawer { display: none; background: var(--navy-dk); padding: 12px 20px 20px; flex-direction: column; gap: 4px; }
+  .nav-drawer a { color: rgba(255,255,255,0.85); font-size: 14px; padding: 10px 12px; border-radius: 6px; display: block; cursor: pointer; }
+  .nav-drawer a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+  .nav-drawer.open { display: flex; }
+
+  /* HERO */
+  .hero { background: var(--navy); padding: 72px 40px 80px; text-align: center; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; background: rgba(255,255,255,0.05); border-radius: 50%; }
+  .hero::after  { content: ''; position: absolute; bottom: -40px; left: -40px; width: 160px; height: 160px; background: rgba(255,255,255,0.04); border-radius: 50%; }
+  .hero-eyebrow { display: inline-block; background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 500; letter-spacing: 0.06em; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; position: relative; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 600; color: #fff; line-height: 1.2; margin-bottom: 16px; position: relative; max-width: 680px; margin-left: auto; margin-right: auto; }
+  .hero p { color: rgba(255,255,255,0.75); font-size: 16px; line-height: 1.65; max-width: 500px; margin: 0 auto 32px; position: relative; }
+  .hero-btns { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; position: relative; }
+  .btn-primary { background: #fff; color: var(--navy); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; border: none; border-radius: 30px; padding: 13px 28px; cursor: pointer; transition: transform .15s; }
+  .btn-primary:hover { transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: #fff; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; border: 1.5px solid rgba(255,255,255,0.55); border-radius: 30px; padding: 12px 26px; cursor: pointer; transition: background .18s; }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+
+  /* SECTIONS */
+  .section { padding: 64px 40px; }
+  .section-alt   { background: var(--bg); }
+  .section-navy  { background: var(--navy); }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--navy); margin-bottom: 10px; }
+  .section-label-light { color: rgba(255,255,255,0.65); }
+  .section h2 { font-family: 'Playfair Display', serif; font-size: 30px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.25; }
+  .section h2.light { color: #fff; }
+  .section .lead { font-size: 15px; color: var(--muted); line-height: 1.65; max-width: 560px; }
+  .section .lead.light { color: rgba(255,255,255,0.72); }
+  .ctr { text-align: center; }
+  .ctr .lead { margin: 0 auto; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+  /* QUICK LINKS */
+  .ql-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 36px; }
+  .ql-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px 18px; text-align: center; cursor: pointer; transition: transform .18s, border-color .18s; }
+  .ql-card:hover { transform: translateY(-3px); border-color: #b0bec5; }
+  .ql-icon { width: 54px; height: 54px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px; }
+  .ql-card h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .ql-card p  { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .ql-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: var(--navy); font-weight: 500; margin-top: 12px; }
+
+  /* RESOURCES */
+  .resources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; margin-top: 40px; }
+  .resource-accordion { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; }
+  .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; transition: background .15s; }
+  .accordion-header:hover { background: var(--bg); }
+  .accordion-header-left { display: flex; align-items: center; gap: 14px; }
+  .accordion-icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+  .accordion-title h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .accordion-title p  { font-size: 12px; color: var(--muted); }
+  .accordion-chevron { font-size: 18px; color: var(--muted); transition: transform .25s; flex-shrink: 0; }
+  .accordion-chevron.open { transform: rotate(180deg); }
+  .accordion-body { border-top: 1px solid var(--border); padding: 0 20px; display: none; }
+  .accordion-body.open { display: block; }
+  .dl-item { display: flex; align-items: center; justify-content: space-between; padding: 13px 0; border-bottom: 1px solid #f0f0f0; gap: 12px; }
+  .dl-item:last-child { border-bottom: none; }
+  .dl-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .dl-info strong { display: block; font-size: 13px; font-weight: 500; color: var(--text); }
+  .dl-info span   { font-size: 11px; color: var(--muted); }
+  .dl-btn { display: inline-flex; align-items: center; gap: 5px; background: #e8f0fe; color: #1558d6; border: none; border-radius: 6px; padding: 7px 14px; font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; white-space: nowrap; transition: background .15s; text-decoration: none; }
+  .dl-btn:hover { background: #d2e3fc; }
+  .photo-placeholder { background: #e3f2fd; border-radius: var(--radius-lg); aspect-ratio: 4/3; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px dashed #90caf9; }
+  .photo-placeholder p { font-size: 12px; color: #1565c0; opacity: 0.7; }
+
+  /* COUNSELOR CORNER */
+  .cc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; text-align: left; }
+  .cc-card { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18); border-radius: var(--radius-lg); padding: 22px 20px; transition: background .18s; cursor: pointer; display: block; color: inherit; }
+  .cc-card:hover { background: rgba(255,255,255,0.14); }
+  .cc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .cc-avatar { width: 42px; height: 42px; border-radius: 50%; background: rgba(255,255,255,0.15); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; flex-shrink: 0; }
+  .cc-meta h4 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+  .cc-meta span { font-size: 11px; color: rgba(255,255,255,0.6); }
+  .cc-body p { font-size: 13px; color: rgba(255,255,255,0.78); line-height: 1.6; }
+  .cc-chip { display: inline-block; background: rgba(255,255,255,0.14); color: rgba(255,255,255,0.9); font-size: 11px; padding: 4px 10px; border-radius: 14px; margin-top: 12px; }
+  .cc-new { background: #fce4ec; color: #c62828; font-size: 10px; padding: 3px 9px; border-radius: 12px; margin-left: auto; font-weight: 600; flex-shrink: 0; }
+  .cc-archive-section { margin-top: 32px; }
+  .cc-archive-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 14px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .cc-archive-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .cc-archive-item { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; gap: 8px; transition: background .15s; }
+  .cc-archive-item:hover { background: rgba(255,255,255,0.12); }
+  .cc-archive-item span { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; }
+  .cc-archive-btn { background: rgba(255,255,255,0.15); color: #fff; border: none; border-radius: 6px; padding: 5px 10px; font-size: 11px; font-family: 'Inter', sans-serif; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+  .cc-archive-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* SEL TOPICS */
+  .sel-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 36px; }
+  .sel-card { border-radius: var(--radius-lg); padding: 24px 20px; cursor: pointer; transition: transform .18s; display: block; }
+  .sel-card:hover { transform: translateY(-3px); }
+  .sel-emoji { font-size: 30px; display: block; margin-bottom: 12px; }
+  .sel-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+  .sel-card p  { font-size: 12px; line-height: 1.55; }
+  .sel-card .sel-link { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; margin-top: 12px; }
+  .sel-pink   { background: #fce4ec; } .sel-pink h3 { color: #880e4f; } .sel-pink p, .sel-pink .sel-link { color: #ad1457; }
+  .sel-blue   { background: #e3f2fd; } .sel-blue h3 { color: #0d47a1; } .sel-blue p, .sel-blue .sel-link { color: #1565c0; }
+  .sel-green  { background: #e8f5e9; } .sel-green h3 { color: #1b5e20; } .sel-green p, .sel-green .sel-link { color: #2e7d32; }
+  .sel-amber  { background: #fff8e1; } .sel-amber h3 { color: #e65100; } .sel-amber p, .sel-amber .sel-link { color: #ef6c00; }
+  .sel-purple { background: #ede7f6; } .sel-purple h3 { color: #4527a0; } .sel-purple p, .sel-purple .sel-link { color: #6200ea; }
+  .sel-teal   { background: #e0f2f1; } .sel-teal h3 { color: #004d40; } .sel-teal p, .sel-teal .sel-link { color: #00695c; }
+
+  /* CONTACT / FOOTER */
+  .contact-bar { background: var(--bg); border-top: 1px solid var(--border); padding: 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .contact-info h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .contact-info p  { font-size: 13px; color: var(--muted); }
+  .contact-email { display: inline-flex; align-items: center; gap: 8px; background: var(--navy); color: #fff; border: none; border-radius: 30px; padding: 12px 24px; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; text-decoration: none; transition: background .18s; }
+  .contact-email:hover { background: var(--navy-lt); }
+  footer { background: #202124; padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer p   { color: rgba(255,255,255,0.45); font-size: 12px; }
+  footer nav { display: flex; gap: 20px; }
+  footer nav a { color: rgba(255,255,255,0.45); font-size: 12px; cursor: pointer; }
+  footer nav a:hover { color: rgba(255,255,255,0.8); }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    .lang-bar { padding: 6px 16px; }
+    .nav { padding: 0 16px; height: 56px; }
+    .nav-links { display: none; }
+    .nav-burger { display: block; }
+    .hero { padding: 48px 20px 56px; }
+    .hero h1 { font-size: 28px; }
+    .hero p  { font-size: 14px; }
+    .section { padding: 44px 20px; }
+    .ql-grid  { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 24px; }
+    .resources-grid { grid-template-columns: 1fr; gap: 32px; }
+    .cc-grid  { grid-template-columns: 1fr; gap: 12px; }
+    .cc-archive-grid { grid-template-columns: 1fr 1fr; }
+    .sel-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .contact-bar { flex-direction: column; align-items: flex-start; padding: 32px 20px; }
+    footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+    .photo-placeholder { display: none; }
+  }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 24px; }
+    .cc-archive-grid { grid-template-columns: 1fr; }
+    .sel-grid { grid-template-columns: 1fr; }
+  }
+
+  /* LANGUAGE */
+  [data-lang="es"] { display: block; }
+  [data-lang="en"] { display: none; }
+  body.en [data-lang="es"] { display: none; }
+  body.en [data-lang="en"] { display: block; }
+  span[data-lang="es"] { display: inline; }
+  span[data-lang="en"] { display: none; }
+  body.en span[data-lang="es"] { display: none; }
+  body.en span[data-lang="en"] { display: inline; }
+
+  /* SVG icon helper */
+  .ico svg { display: inline-block; vertical-align: middle; }
+</style>
+</head>
+<body>
+
+<!-- LANGUAGE BAR -->
+<div class="lang-bar">
+  <button class="lang-btn active" id="btn-es" onclick="setLang('es')">ES</button>
+  <button class="lang-btn"        id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<!-- NAV -->
+<header>
+  <nav class="nav" id="main-nav">
+    <div class="nav-logo" onclick="scrollTo(0,0)">
+      <div class="nav-logo-img">
+        <!-- LOGO: replace the span below with <img src="logo.png" alt="PCIS Logo"> once you have the file -->
+        <span class="initials">PC</span>
+      </div>
+      <div class="nav-title">
+        <strong>Elementary Hub</strong>
+        <small>Puntacana International School</small>
+      </div>
+    </div>
+    <div class="nav-links">
+      <a onclick="scrollToId('quicklinks')"><span data-lang="es">Inicio</span><span data-lang="en">Home</span></a>
+      <a onclick="scrollToId('recursos')"><span data-lang="es">Recursos</span><span data-lang="en">Resources</span></a>
+      <a onclick="scrollToId('counselor')">Counselor Corner</a>
+      <a onclick="scrollToId('sel')"><span data-lang="es">Bienestar SEL</span><span data-lang="en">SEL Wellness</span></a>
+      <a onclick="scrollToId('contacto')"><span data-lang="es">Contacto</span><span data-lang="en">Contact</span></a>
+    </div>
+    <button class="nav-burger" id="burger" aria-label="Menu" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-drawer" id="nav-drawer">
+    <a onclick="scrollToId('quicklinks'); closeDrawer()"><span data-lang="es">Inicio</span><span data-lang="en">Home</span></a>
+    <a onclick="scrollToId('recursos'); closeDrawer()"><span data-lang="es">Recursos</span><span data-lang="en">Resources</span></a>
+    <a onclick="scrollToId('counselor'); closeDrawer()">Counselor Corner</a>
+    <a onclick="scrollToId('sel'); closeDrawer()"><span data-lang="es">Bienestar SEL</span><span data-lang="en">SEL Wellness</span></a>
+    <a onclick="scrollToId('contacto'); closeDrawer()"><span data-lang="es">Contacto</span><span data-lang="en">Contact</span></a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Puntacana International School · Elementary</div>
+  <h1 data-lang="es">Bienvenidos,<br>familias de Elementary</h1>
+  <h1 data-lang="en">Welcome,<br>Elementary Families</h1>
+  <p data-lang="es">Todo lo que necesitan para acompañar el aprendizaje y el bienestar de sus hijos, en un solo lugar.</p>
+  <p data-lang="en">Everything you need to support your child's learning and wellbeing, all in one place.</p>
+  <div class="hero-btns">
+    <button class="btn-primary" onclick="scrollToId('recursos')"><span data-lang="es">Ver recursos</span><span data-lang="en">View resources</span></button>
+    <button class="btn-outline"  onclick="scrollToId('counselor')">Counselor Corner</button>
+  </div>
+</section>
+
+<!-- QUICK LINKS -->
+<section class="section" id="quicklinks">
+  <div class="ctr">
+    <p class="section-label"><span data-lang="es">Acceso rápido</span><span data-lang="en">Quick access</span></p>
+    <h2><span data-lang="es">¿Qué están buscando hoy?</span><span data-lang="en">What are you looking for today?</span></h2>
+    <p class="lead"><span data-lang="es">Encuentra rápidamente los documentos, comunicaciones y guías que necesitas.</span><span data-lang="en">Quickly find the documents, communications and guides you need.</span></p>
+  </div>
+  <div class="ql-grid">
+    <div class="ql-card" onclick="scrollToId('recursos')">
+      <div class="ql-icon" style="background:#e3f2fd;color:#0d47a1;">📚</div>
+      <h3><span data-lang="es">Lista de útiles</span><span data-lang="en">Supply lists</span></h3>
+      <p><span data-lang="es">Por grado · Año escolar 2026–27</span><span data-lang="en">By grade · School year 2026–27</span></p>
+      <span class="ql-link"><span data-lang="es">Descargar</span><span data-lang="en">Download</span> →</span>
+    </div>
+    <div class="ql-card" onclick="scrollToId('recursos')">
+      <div class="ql-icon" style="background:#fff8e1;color:#e65100;">📄</div>
+      <h3><span data-lang="es">Políticas del colegio</span><span data-lang="en">School policies</span></h3>
+      <p><span data-lang="es">Manual · Uniformes · Calendario</span><span data-lang="en">Handbook · Uniforms · Calendar</span></p>
+      <span class="ql-link"><span data-lang="es">Ver documentos</span><span data-lang="en">View documents</span> →</span>
+    </div>
+    <div class="ql-card" onclick="scrollToId('counselor')">
+      <div class="ql-icon" style="background:#e8f5e9;color:#1b5e20;">💬</div>
+      <h3>Counselor Corner</h3>
+      <p><span data-lang="es">Comunicaciones mensuales</span><span data-lang="en">Monthly communications</span></p>
+      <span class="ql-link"><span data-lang="es">Leer</span><span data-lang="en">Read</span> →</span>
+    </div>
+    <div class="ql-card" onclick="scrollToId('sel')">
+      <div class="ql-icon" style="background:#ede7f6;color:#4527a0;">💜</div>
+      <h3><span data-lang="es">Bienestar SEL</span><span data-lang="en">SEL Wellness</span></h3>
+      <p><span data-lang="es">Pubertad · Emociones · Amistad</span><span data-lang="en">Puberty · Emotions · Friendship</span></p>
+      <span class="ql-link"><span data-lang="es">Explorar</span><span data-lang="en">Explore</span> →</span>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- RESOURCES -->
+<section class="section section-alt" id="recursos">
+  <p class="section-label"><span data-lang="es">Recursos descargables</span><span data-lang="en">Downloadable resources</span></p>
+  <h2><span data-lang="es">Documentos del año escolar</span><span data-lang="en">School year documents</span></h2>
+  <p class="lead"><span data-lang="es">Listas de útiles, lectura de verano, políticas y materiales importantes.</span><span data-lang="en">Supply lists, summer reading, policies and important materials.</span></p>
+
+  <div class="resources-grid">
+    <div>
+
+      <!-- ACCORDION: School Supplies -->
+      <div class="resource-accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <div class="accordion-icon" style="background:#e3f2fd;color:#0d47a1;">📚</div>
+            <div class="accordion-title">
+              <h3><span data-lang="es">Lista de útiles por grado</span><span data-lang="en">School supply lists by grade</span></h3>
+              <p><span data-lang="es">Año escolar 2026–27</span><span data-lang="en">School year 2026–27</span></p>
+            </div>
+          </div>
+          <span class="accordion-chevron">▾</span>
+        </div>
+        <div class="accordion-body">
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📕</span>
+              <div class="dl-info"><strong><span data-lang="es">2do Grado / 2nd Grade</span></strong><span>PDF · 2026–27</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/17r0uDZdC5k_65IuxB6ndz3hnX7x1mux8/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📕</span>
+              <div class="dl-info"><strong><span data-lang="es">3er Grado / 3rd Grade</span></strong><span>PDF · 2026–27</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1dizFeT8RH37HgEnjZJ1BsXZ5KHXJ4ukD/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📕</span>
+              <div class="dl-info"><strong><span data-lang="es">4to Grado / 4th Grade</span></strong><span>PDF · 2026–27</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1s64B0CLXMs3QgebcYXJmMymJFAuDABJJ/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📕</span>
+              <div class="dl-info"><strong><span data-lang="es">5to Grado / 5th Grade</span></strong><span>PDF · 2026–27</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1a-Wz0VitEaJ0pifnV6fLx3PadFbAWOxG/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📕</span>
+              <div class="dl-info"><strong><span data-lang="es">6to Grado / 6th Grade</span></strong><span>PDF · 2026–27</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1EwAMWQBLEHhMzz9nssCgytIpI6OZJlX8/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION: Summer Reading -->
+      <div class="resource-accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <div class="accordion-icon" style="background:#e8f5e9;color:#1b5e20;">☀️</div>
+            <div class="accordion-title">
+              <h3><span data-lang="es">Lectura de verano</span><span data-lang="en">Summer reading program</span></h3>
+              <p><span data-lang="es">Listas por grado · Verano 2026</span><span data-lang="en">By grade · Summer 2026</span></p>
+            </div>
+          </div>
+          <span class="accordion-chevron">▾</span>
+        </div>
+        <div class="accordion-body">
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📗</span>
+              <div class="dl-info"><strong><span data-lang="es">Entrando a 2do Grado / Entering 2nd Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/13nqeM2baFmw7iYOU99svO9vLy2hMmVc1/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📗</span>
+              <div class="dl-info"><strong><span data-lang="es">Entrando a 4to Grado / Entering 4th Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/17U8OAVJwZYDGb0Qkn_fyayyADSKyP-ei/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📗</span>
+              <div class="dl-info"><strong><span data-lang="es">Entrando a 5to Grado / Entering 5th Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/14ZBgHuhKNI3f99z-t0r0n5SL4oglB3gf/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📗</span>
+              <div class="dl-info"><strong><span data-lang="es">Entrando a 6to Grado / Entering 6th Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1xg-fGnZ-CDPXv-uLV4F2NoEYVgkYI8Ci/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION: Book Reports -->
+      <div class="resource-accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <div class="accordion-icon" style="background:#fff8e1;color:#e65100;">📝</div>
+            <div class="accordion-title">
+              <h3><span data-lang="es">Formatos de Book Report</span><span data-lang="en">Book report forms</span></h3>
+              <p><span data-lang="es">Por grado · Para imprimir</span><span data-lang="en">By grade · Printable</span></p>
+            </div>
+          </div>
+          <span class="accordion-chevron">▾</span>
+        </div>
+        <div class="accordion-body">
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📄</span>
+              <div class="dl-info"><strong><span data-lang="es">2do Grado / 2nd Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1jKCiLnUHW0yNtVFFM_9XNbtlBzcr1bTa/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📄</span>
+              <div class="dl-info"><strong><span data-lang="es">3ro – 6to Grado / 3rd–6th Grade</span></strong><span>PDF</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1snYnlEPR6YWWfz6169tMrR1BcpABg195/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDION: Policies -->
+      <div class="resource-accordion">
+        <div class="accordion-header" onclick="toggleAccordion(this)">
+          <div class="accordion-header-left">
+            <div class="accordion-icon" style="background:#ede7f6;color:#4527a0;">📋</div>
+            <div class="accordion-title">
+              <h3><span data-lang="es">Políticas del colegio</span><span data-lang="en">School policies</span></h3>
+              <p><span data-lang="es">Uniformes · Calendario</span><span data-lang="en">Uniforms · Calendar</span></p>
+            </div>
+          </div>
+          <span class="accordion-chevron">▾</span>
+        </div>
+        <div class="accordion-body">
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📄</span>
+              <div class="dl-info"><strong><span data-lang="es">Política de uniformes</span><span data-lang="en">Uniform policy</span></strong><span>PDF · 2024–25</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1rVKHqu3gc3FLELDBDrtjb3Mo5g_JF1Ex/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+          <div class="dl-item">
+            <div class="dl-left">
+              <span style="font-size:20px;color:#ea4335;">📄</span>
+              <div class="dl-info"><strong><span data-lang="es">Calendario académico</span><span data-lang="en">Academic calendar</span></strong><span>PDF · 2025–26</span></div>
+            </div>
+            <a class="dl-btn" href="https://drive.google.com/file/d/1THHeSFhfOdbaSatZiGq8KWm-QM8YA45N/view" target="_blank">
+              ⬇ <span data-lang="es">Descargar</span><span data-lang="en">Download</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end left col -->
+
+    <div class="photo-placeholder">
+      <span style="font-size:48px;opacity:0.4;">🏫</span>
+      <p><span data-lang="es">Foto del campus / equipo PCIS</span><span data-lang="en">PCIS campus / team photo</span></p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- COUNSELOR CORNER -->
+<section class="section section-navy" id="counselor">
+  <div class="ctr">
+    <p class="section-label section-label-light">Counselor Corner</p>
+    <h2 class="light"><span data-lang="es">Comunicaciones de la consejera</span><span data-lang="en">Counselor communications</span></h2>
+    <p class="lead light"><span data-lang="es">Cada mes compartimos recursos y reflexiones para apoyar el bienestar de nuestros estudiantes y sus familias.</span><span data-lang="en">Each month we share resources and reflections to support the wellbeing of our students and families.</span></p>
+  </div>
+
+  <!-- 3 most recent -->
+  <div class="cc-grid">
+    <a class="cc-card" href="https://drive.google.com/file/d/1P7AlPqetQK16jaxxBLsOYfngVq6yLtXf/view" target="_blank">
+      <div class="cc-header">
+        <div class="cc-avatar">CC</div>
+        <div class="cc-meta">
+          <h4><span data-lang="es">Marzo 2026</span><span data-lang="en">March 2026</span></h4>
+          <span>Counselor Corner</span>
+        </div>
+        <span class="cc-new"><span data-lang="es">Reciente</span><span data-lang="en">Recent</span></span>
+      </div>
+      <div class="cc-body"><p><span data-lang="es">Recursos y orientación del mes de marzo para las familias de Elementary.</span><span data-lang="en">March resources and guidance for Elementary families.</span></p></div>
+      <span class="cc-chip">📄 <span data-lang="es">Abrir PDF</span><span data-lang="en">Open PDF</span></span>
+    </a>
+    <a class="cc-card" href="https://drive.google.com/file/d/1ndVQ89Nkq3E-9c1kihxspcSpDeJbsGCq/view" target="_blank">
+      <div class="cc-header">
+        <div class="cc-avatar">CC</div>
+        <div class="cc-meta">
+          <h4><span data-lang="es">Febrero 2026</span><span data-lang="en">February 2026</span></h4>
+          <span>Counselor Corner</span>
+        </div>
+      </div>
+      <div class="cc-body"><p><span data-lang="es">Recursos y orientación del mes de febrero para las familias de Elementary.</span><span data-lang="en">February resources and guidance for Elementary families.</span></p></div>
+      <span class="cc-chip">📄 <span data-lang="es">Abrir PDF</span><span data-lang="en">Open PDF</span></span>
+    </a>
+    <a class="cc-card" href="https://drive.google.com/file/d/121SO9KVwJkGk6N2tAIfKAlK4qLV0NYNw/view" target="_blank">
+      <div class="cc-header">
+        <div class="cc-avatar">CC</div>
+        <div class="cc-meta">
+          <h4><span data-lang="es">Diciembre 2025</span><span data-lang="en">December 2025</span></h4>
+          <span>Counselor Corner</span>
+        </div>
+      </div>
+      <div class="cc-body"><p><span data-lang="es">Recursos y orientación del mes de diciembre para las familias de Elementary.</span><span data-lang="en">December resources and guidance for Elementary families.</span></p></div>
+      <span class="cc-chip">📄 <span data-lang="es">Abrir PDF</span><span data-lang="en">Open PDF</span></span>
+    </a>
+  </div>
+
+  <!-- Full archive -->
+  <div class="cc-archive-section">
+    <p class="cc-archive-title"><span data-lang="es">Archivo completo</span><span data-lang="en">Full archive</span></p>
+    <div class="cc-archive-grid">
+      <div class="cc-archive-item">
+        <span>🗓 <span data-lang="es">Agosto 2025</span><span data-lang="en">August 2025</span></span>
+        <a class="cc-archive-btn" href="https://drive.google.com/file/d/1q5bqhxEqBm7FU3zbaM4f44UbLGD9_lWZ/view" target="_blank">📄 PDF</a>
+      </div>
+      <div class="cc-archive-item">
+        <span>🗓 <span data-lang="es">Septiembre 2025</span><span data-lang="en">September 2025</span></span>
+        <a class="cc-archive-btn" href="https://drive.google.com/file/d/1f3H-xBN2ZV0xH-LVEkrKERKrNDDnCTEX/view" target="_blank">📄 PDF</a>
+      </div>
+      <div class="cc-archive-item">
+        <span>🗓 <span data-lang="es">Octubre 2025</span><span data-lang="en">October 2025</span></span>
+        <a class="cc-archive-btn" href="https://drive.google.com/file/d/1o5pqTDkL8ykY2N1-bVgl3pNExNwSZ-Tw/view" target="_blank">📄 PDF</a>
+      </div>
+      <div class="cc-archive-item">
+        <span>🗓 <span data-lang="es">Noviembre 2025</span><span data-lang="en">November 2025</span></span>
+        <a class="cc-archive-btn" href="https://drive.google.com/file/d/1QcjCCwwBTfB9AqeioDaaIdD7B_k0d9Wy/view" target="_blank">📄 PDF</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- SEL TOPICS -->
+<section class="section section-alt" id="sel">
+  <div class="ctr">
+    <p class="section-label"><span data-lang="es">Bienestar y desarrollo</span><span data-lang="en">Wellness & development</span></p>
+    <h2><span data-lang="es">Temas para acompañar a tus hijos</span><span data-lang="en">Topics to support your children</span></h2>
+    <p class="lead"><span data-lang="es">Guías para padres, recursos prácticos y orientación sobre los temas que más importan en esta etapa.</span><span data-lang="en">Parent guides, practical resources and guidance on the topics that matter most at this stage.</span></p>
+  </div>
+  <div class="sel-grid">
+    <a class="sel-card sel-pink" href="https://drive.google.com/file/d/1GpwDHJFAfqextrSgF9-rKrXilv_7EaoP/view" target="_blank">
+      <span class="sel-emoji">🌸</span>
+      <h3><span data-lang="es">Pubertad</span><span data-lang="en">Puberty</span></h3>
+      <p><span data-lang="es">Cómo hablar con tus hijos sobre los cambios físicos y emocionales de manera natural y sin tabúes.</span><span data-lang="en">How to talk with your children about physical and emotional changes naturally and openly.</span></p>
+      <span class="sel-link"><span data-lang="es">Abrir guía</span><span data-lang="en">Open guide</span> →</span>
+    </a>
+    <a class="sel-card sel-blue" href="https://drive.google.com/file/d/1GydLujuaQnIc4CuBwHYlcdhqJTwTsHLi/view" target="_blank">
+      <span class="sel-emoji">📱</span>
+      <h3><span data-lang="es">Redes sociales</span><span data-lang="en">Social media</span></h3>
+      <p><span data-lang="es">Uso seguro y saludable de la tecnología. Límites de edad, apps apropiadas y conversaciones en familia.</span><span data-lang="en">Safe and healthy technology use. Age limits, appropriate apps and family conversations.</span></p>
+      <span class="sel-link"><span data-lang="es">Abrir guía (ES)</span><span data-lang="en">Open guide (EN)</span> →</span>
+    </a>
+    <a class="sel-card sel-green" href="#GOOGLE_DRIVE_AMISTAD" target="_blank">
+      <span class="sel-emoji">🤝</span>
+      <h3><span data-lang="es">Amistad</span><span data-lang="en">Friendship</span></h3>
+      <p><span data-lang="es">Relaciones saludables, inclusión y cómo apoyar a tu hijo en dinámicas de grupo y momentos difíciles.</span><span data-lang="en">Healthy relationships, inclusion and how to support your child in group dynamics and difficult moments.</span></p>
+      <span class="sel-link"><span data-lang="es">Próximamente</span><span data-lang="en">Coming soon</span> →</span>
+    </a>
+    <a class="sel-card sel-amber" href="https://drive.google.com/file/d/1T9KCrnJoa6zQWbuwa23gK69XKEunc2hY/view" target="_blank">
+      <span class="sel-emoji">⚡</span>
+      <h3><span data-lang="es">Conflictos y emociones</span><span data-lang="en">Conflict & emotions</span></h3>
+      <p><span data-lang="es">Herramientas para manejar el enojo y los desacuerdos de forma asertiva y respetuosa.</span><span data-lang="en">Tools for managing anger and disagreements in an assertive and respectful way.</span></p>
+      <span class="sel-link"><span data-lang="es">Abrir guía</span><span data-lang="en">Open guide</span> →</span>
+    </a>
+    <a class="sel-card sel-purple" href="https://drive.google.com/file/d/1FPMAg4LdX2ORIzNz48CL_EWYX99sYoKv/view" target="_blank">
+      <span class="sel-emoji">💜</span>
+      <h3><span data-lang="es">Emociones e identidad</span><span data-lang="en">Emotions & identity</span></h3>
+      <p><span data-lang="es">Estrategias de calma y regulación emocional para crear un ambiente familiar que valide los sentimientos.</span><span data-lang="en">Calming strategies and emotional regulation to create a home environment that validates feelings.</span></p>
+      <span class="sel-link"><span data-lang="es">Abrir guía</span><span data-lang="en">Open guide</span> →</span>
+    </a>
+    <a class="sel-card sel-teal" href="https://drive.google.com/file/d/1GpwDHJFAfqextrSgF9-rKrXilv_7EaoP/view" target="_blank">
+      <span class="sel-emoji">🌟</span>
+      <h3><span data-lang="es">Autoestima</span><span data-lang="en">Self-esteem</span></h3>
+      <p><span data-lang="es">Cómo apoyar la confianza y el sentido de identidad de tu hijo en cada etapa del Elementary.</span><span data-lang="en">How to support your child's confidence and sense of identity throughout Elementary.</span></p>
+      <span class="sel-link"><span data-lang="es">Abrir guía</span><span data-lang="en">Open guide</span> →</span>
+    </a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CONTACT -->
+<div class="contact-bar" id="contacto">
+  <div class="contact-info">
+    <h3><span data-lang="es">¿Tienes alguna pregunta?</span><span data-lang="en">Have a question?</span></h3>
+    <p><span data-lang="es">El equipo de Elementary está aquí para apoyarte.</span><span data-lang="en">The Elementary team is here to support you.</span></p>
+  </div>
+  <!-- Replace with the real counselor email -->
+  <a class="contact-email" href="mailto:spaulino@pcis.edu.do">
+    ✉ <span data-lang="es">Escribirnos</span><span data-lang="en">Contact us</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2026 Puntacana International School · Elementary Hub</p>
+  <nav>
+    <a href="https://pcis.edu" target="_blank">pcis.edu</a>
+    <a onclick="scrollTo(0,0)"><span data-lang="es">Volver arriba</span><span data-lang="en">Back to top</span></a>
+  </nav>
+</footer>
+
+<script>
+  function setLang(lang) {
+    document.body.classList.toggle('en', lang === 'en');
+    document.getElementById('btn-es').classList.toggle('active', lang === 'es');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    localStorage.setItem('pcis-lang', lang);
+  }
+  (function() { if (localStorage.getItem('pcis-lang') === 'en') setLang('en'); })();
+
+  function toggleDrawer() { document.getElementById('nav-drawer').classList.toggle('open'); }
+  function closeDrawer()  { document.getElementById('nav-drawer').classList.remove('open'); }
+  function scrollToId(id) { var el = document.getElementById(id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+
+  function toggleAccordion(header) {
+    var body    = header.nextElementSibling;
+    var chevron = header.querySelector('.accordion-chevron');
+    var isOpen  = body.classList.contains('open');
+    body.classList.toggle('open', !isOpen);
+    chevron.style.transform = isOpen ? '' : 'rotate(180deg)';
+  }
+</script>
+</body>
+</html>
